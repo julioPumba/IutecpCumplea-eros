@@ -7,41 +7,63 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Fondo con degradado suave y moderno */
+        body {
+            background: radial-gradient(circle at top right, #f8faff 0%, #ffffff 50%, #f1f5ff 100%);
+            min-height: 100vh;
+        }
+
+        /* Botón activo con estilo moderno */
         .month-btn.active {
-            background-color: #4f46e5;
+            background: #4f46e5;
             color: white;
-            border-color: #4f46e5;
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Animación para que el pastel flote al pasar el mouse */
+        .card-birthday:hover .cake-icon {
+            transform: scale(1.2) translateY(-5px) rotate(10deg);
+        }
+        
+        .cake-icon {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Efecto de cristal para las tarjetas */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans">
+<body class="text-slate-800 font-sans antialiased">
 
-    <div class="max-w-6xl mx-auto py-10 px-4">
-        <header class="text-center mb-12">
-            <div class="inline-block bg-indigo-100 text-indigo-700 px-4 py-1 rounded-full text-sm font-bold mb-4 uppercase tracking-widest">
-                IUTECP - Ingeniería de Información
+    <div class="max-w-6xl mx-auto py-12 px-4">
+        <header class="text-center mb-14">
+            <div class="inline-block bg-indigo-50 text-indigo-600 px-6 py-1.5 rounded-full text-xs font-bold mb-6 uppercase tracking-[0.2em] border border-indigo-100 shadow-sm">
+                IUTECP • Ingeniería de Información
             </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2">
+            <h1 class="text-4xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight">
                 🥳 🎈 Cumpleañeros 🎂 🎉
             </h1>
-            <p id="sub-header" class="text-slate-500 text-lg">Celebraciones destacadas del equipo</p>
+            <p id="sub-header" class="text-slate-500 text-lg font-medium">Cargando celebraciones...</p>
         </header>
 
-        <div id="month-filters" class="flex flex-wrap justify-center gap-2 mb-12">
-            <button id="btn-inicio" onclick="renderInitialScreen()" class="month-btn active px-5 py-2 rounded-xl bg-white border border-slate-200 hover:border-indigo-400 transition all shadow-sm font-medium">
+        <div id="month-filters" class="flex flex-wrap justify-center gap-3 mb-16">
+            <button id="btn-inicio" onclick="renderInitialScreen()" 
+                class="month-btn active px-6 py-2.5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 transition-all duration-300 shadow-sm font-bold flex items-center gap-2">
                 ✨ Próximos
             </button>
         </div>
 
-        <div id="birthday-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        </div>
+        <div id="birthday-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            </div>
     </div>
 
     <script>
-        const months = [
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        ];
+        const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
         const people = [
             { name: "Ing. Luis Blanco", day: 24, month: "Enero", color: "bg-blue-100" },
@@ -90,7 +112,7 @@
             months.forEach(month => {
                 const btn = document.createElement('button');
                 btn.innerText = month;
-                btn.className = "month-btn px-5 py-2 rounded-xl bg-white border border-slate-200 hover:border-indigo-400 transition all shadow-sm font-medium";
+                btn.className = "month-btn px-5 py-2.5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 transition-all duration-300 shadow-sm font-semibold text-slate-600";
                 btn.onclick = () => filterMonth(month);
                 container.appendChild(btn);
             });
@@ -101,27 +123,23 @@
             const subHeader = document.getElementById('sub-header');
             grid.innerHTML = '';
             
-            const btns = document.querySelectorAll('.month-btn');
-            btns.forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('btn-inicio').classList.add('active');
 
             const now = new Date();
             const currentMonthIdx = now.getMonth(); 
             const nextMonthIdx = (currentMonthIdx + 1) % 12;
 
-            const currentMonthName = months[currentMonthIdx];
-            const nextMonthName = months[nextMonthIdx];
+            subHeader.innerHTML = `✨ Mostrando los próximos cumpleañeros de <span class="text-indigo-600 font-bold">${months[currentMonthIdx]}</span> y <span class="text-indigo-600 font-bold">${months[nextMonthIdx]}</span>`;
 
-            subHeader.innerText = `Próximos cumpleañeros de ${currentMonthName} y ${nextMonthName}`;
-
-            const filtered = people.filter(p => p.month === currentMonthName || p.month === nextMonthName);
-
+            const filtered = people.filter(p => p.month === months[currentMonthIdx] || p.month === months[nextMonthIdx]);
+            
             filtered.sort((a, b) => {
-                const monthA = months.indexOf(a.month);
-                const monthB = months.indexOf(b.month);
-                const adjustedMonthA = (monthA < currentMonthIdx) ? monthA + 12 : monthA;
-                const adjustedMonthB = (monthB < currentMonthIdx) ? monthB + 12 : monthB;
-                if (adjustedMonthA !== adjustedMonthB) return adjustedMonthA - adjustedMonthB;
+                const mIdxA = months.indexOf(a.month);
+                const mIdxB = months.indexOf(b.month);
+                const adjA = (mIdxA < currentMonthIdx) ? mIdxA + 12 : mIdxA;
+                const adjB = (mIdxB < currentMonthIdx) ? mIdxB + 12 : mIdxB;
+                if (adjA !== adjB) return adjA - adjB;
                 return a.day - b.day;
             });
 
@@ -133,13 +151,12 @@
             const subHeader = document.getElementById('sub-header');
             grid.innerHTML = '';
 
-            const btns = document.querySelectorAll('.month-btn');
-            btns.forEach(btn => {
+            document.querySelectorAll('.month-btn').forEach(btn => {
                 if(btn.innerText === monthName) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
 
-            subHeader.innerText = `Cumpleañeros de ${monthName}`;
+            subHeader.innerHTML = `Celebraciones de <span class="text-indigo-600 font-bold">${monthName}</span>`;
             const filtered = people.filter(p => p.month === monthName).sort((a, b) => a.day - b.day);
             renderCards(filtered, grid);
         }
@@ -147,21 +164,22 @@
         function renderCards(list, container) {
             if (list.length === 0) {
                 container.innerHTML = `
-                    <div class="col-span-full text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                        <p class="text-slate-400 text-lg">No hay cumpleañeros registrados 🍰</p>
+                    <div class="col-span-full text-center py-20 glass-card rounded-[2.5rem] border-2 border-dashed border-slate-200">
+                        <p class="text-slate-400 text-xl font-medium">No hay cumpleañeros registrados este mes 🍰</p>
                     </div>`;
                 return;
             }
 
             list.forEach(person => {
                 const card = `
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 hover:scale-105 transition-transform duration-300">
-                        <div class="w-14 h-14 ${person.color || 'bg-slate-100'} rounded-full flex items-center justify-center text-2xl shadow-inner">
-                            🎂
+                    <div class="card-birthday glass-card p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 flex items-center space-x-5 hover:scale-105 transition-all duration-300 group cursor-pointer">
+                        <div class="w-16 h-16 ${person.color || 'bg-slate-100'} rounded-2xl flex items-center justify-center text-3xl shadow-inner relative overflow-hidden">
+                            <span class="cake-icon relative z-10">🎂</span>
+                            <div class="absolute inset-0 bg-white/20 group-hover:scale-150 transition-transform duration-700 rounded-full"></div>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900 text-lg leading-tight">${person.name}</h3>
-                            <p class="text-indigo-600 font-medium text-sm">${person.day} de ${person.month}</p>
+                            <h3 class="font-black text-slate-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors">${person.name}</h3>
+                            <p class="text-indigo-500 font-bold text-sm tracking-wide mt-1">${person.day} de ${person.month}</p>
                         </div>
                     </div>
                 `;
