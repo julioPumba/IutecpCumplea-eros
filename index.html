@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cumpleaños IUTECP 🎂</title>
+    <title>Cumpleaños IUTECP 🥳</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -22,7 +22,7 @@
                 IUTECP - Ingeniería de Información
             </div>
             <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2">
-                🎈 Cumpleañeros
+                🥳 🎈 Cumpleañeros 🎂 🎉
             </h1>
             <p id="sub-header" class="text-slate-500 text-lg">Celebraciones destacadas del equipo</p>
         </header>
@@ -96,13 +96,11 @@
             });
         }
 
-        // --- NUEVA LÓGICA DE PANTALLA INICIAL ---
         function renderInitialScreen() {
             const grid = document.getElementById('birthday-grid');
             const subHeader = document.getElementById('sub-header');
             grid.innerHTML = '';
             
-            // Gestionar botones
             const btns = document.querySelectorAll('.month-btn');
             btns.forEach(btn => btn.classList.remove('active'));
             document.getElementById('btn-inicio').classList.add('active');
@@ -116,18 +114,13 @@
 
             subHeader.innerText = `Próximos cumpleañeros de ${currentMonthName} y ${nextMonthName}`;
 
-            // Filtrar personas de ambos meses
             const filtered = people.filter(p => p.month === currentMonthName || p.month === nextMonthName);
 
-            // Ordenar: primero los de este mes por día, luego los del mes que sigue por día
             filtered.sort((a, b) => {
                 const monthA = months.indexOf(a.month);
                 const monthB = months.indexOf(b.month);
-                
-                // Caso especial diciembre-enero
                 const adjustedMonthA = (monthA < currentMonthIdx) ? monthA + 12 : monthA;
                 const adjustedMonthB = (monthB < currentMonthIdx) ? monthB + 12 : monthB;
-
                 if (adjustedMonthA !== adjustedMonthB) return adjustedMonthA - adjustedMonthB;
                 return a.day - b.day;
             });
@@ -140,7 +133,6 @@
             const subHeader = document.getElementById('sub-header');
             grid.innerHTML = '';
 
-            // Estilo de botones
             const btns = document.querySelectorAll('.month-btn');
             btns.forEach(btn => {
                 if(btn.innerText === monthName) btn.classList.add('active');
@@ -149,10 +141,10 @@
 
             subHeader.innerText = `Cumpleañeros de ${monthName}`;
             const filtered = people.filter(p => p.month === monthName).sort((a, b) => a.day - b.day);
-            renderCards(filtered, grid, monthName);
+            renderCards(filtered, grid);
         }
 
-        function renderCards(list, container, filterName = '') {
+        function renderCards(list, container) {
             if (list.length === 0) {
                 container.innerHTML = `
                     <div class="col-span-full text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
@@ -177,9 +169,8 @@
             });
         }
 
-        // Iniciar
         createMonthButtons();
-        renderInitialScreen(); // Ahora inicia con la pantalla de próximos
+        renderInitialScreen();
     </script>
 </body>
 </html>
