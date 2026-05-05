@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Cumpleaños 🎂</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+
+    <div class="max-w-4xl mx-auto py-10 px-4">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold text-indigo-600 mb-2">🎈 Cumpleañeros del Mes</h1>
+            <p class="text-slate-500">No dejes pasar ninguna celebración en el equipo</p>
+        </header>
+
+        <div class="flex flex-wrap justify-center gap-2 mb-10">
+            <button onclick="filterMonth('Todos')" class="px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-600 hover:text-white transition shadow-sm font-medium">Todos</button>
+            <button onclick="filterMonth('Enero')" class="px-4 py-2 rounded-full bg-white border border-slate-200 hover:border-indigo-400 transition shadow-sm">Enero</button>
+            <button onclick="filterMonth('Febrero')" class="px-4 py-2 rounded-full bg-white border border-slate-200 hover:border-indigo-400 transition shadow-sm">Febrero</button>
+            <button onclick="filterMonth('Marzo')" class="px-4 py-2 rounded-full bg-white border border-slate-200 hover:border-indigo-400 transition shadow-sm">Marzo</button>
+            </div>
+
+        <div id="birthday-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+    </div>
+
+    <script>
+        // DATOS: Aquí es donde tú o el equipo editarían
+        // En el futuro, esto podría venir de un archivo JSON externo o Google Sheets
+        const people = [
+            { name: "Ana García", day: 5, month: "Enero", color: "bg-pink-100" },
+            { name: "Carlos Ruiz", day: 12, month: "Marzo", color: "bg-blue-100" },
+            { name: "Elena Pérez", day: 22, month: "Enero", color: "bg-green-100" },
+            { name: "Luis Mora", day: 30, month: "Febrero", color: "bg-yellow-100" }
+        ];
+
+        function renderBirthdays(filter = 'Todos') {
+            const grid = document.getElementById('birthday-grid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'Todos' 
+                ? people 
+                : people.filter(p => p.month === filter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-center text-slate-400 py-10">No hay cumpleaños registrados para este mes 🍰</p>`;
+                return;
+            }
+
+            filtered.sort((a, b) => a.day - b.day).forEach(person => {
+                const card = `
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 hover:shadow-md transition">
+                        <div class="w-12 h-12 ${person.color} rounded-full flex items-center justify-center text-xl">
+                            🎂
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800">${person.name}</h3>
+                            <p class="text-sm text-slate-500">${person.day} de ${person.month}</p>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        function filterMonth(month) {
+            renderBirthdays(month);
+        }
+
+        // Carga inicial
+        renderBirthdays();
+    </script>
+</body>
+</html>
