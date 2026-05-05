@@ -31,32 +31,61 @@
             <button onclick="filterMonth('Todos')" class="month-btn active px-5 py-2 rounded-xl bg-white border border-slate-200 hover:border-indigo-400 transition all shadow-sm font-medium">
                 Todos
             </button>
-            </div>
+        </div>
 
         <div id="birthday-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            </div>
+        </div>
     </div>
 
     <script>
-        // LISTA DE MESES
         const months = [
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         ];
 
-        // DATOS DE LAS PERSONAS (Aquí agregas a todos)
+        // LISTA ACTUALIZADA Y DEPURADA
         const people = [
-            { name: "Edward Camacho (Delegado Mixto)", day: 01, month: "Julio", color: "bg-blue-100" },
-            { name: "Emily Toro", day: 22, month: "Agosto", color: "bg-pink-100" },
-            { name: "Maryander Torres", day: 07, month: "Junio", color: "bg-yellow-100" },
-            { name: "Ing. Julio Mendoza", day: 05, month: "Agosto", color: "bg-indigo-100" },
-            { name: "Ing. Jesus Mata", day: 08, month: "Noviembre", color: "bg-blue-100" },
+            { name: "Ing. Luis Blanco", day: 24, month: "Enero", color: "bg-blue-100" },
+            { name: "Ing. Ismael Pernia", day: 22, month: "Enero", color: "bg-indigo-100" },
+            { name: "Ing. Diego Torres", day: 24, month: "Enero", color: "bg-cyan-100" },
+            { name: "Ing. Felix Ruiz", day: 06, month: "Febrero", color: "bg-emerald-100" },
+            { name: "Ing. Kelvin Galindo", day: 23, month: "Febrero", color: "bg-pink-100" },
+            { name: "Ing. Aracely Giral", day: 03, month: "Marzo", color: "bg-yellow-100" },
+            { name: "Ing. Marco Rengifo", day: 05, month: "Marzo", color: "bg-purple-100" },
+            { name: "Ing. Axel Alvarez", day: 09, month: "Marzo", color: "bg-orange-100" },
+            { name: "Ing. Ricardo Pereira", day: 15, month: "Marzo", color: "bg-blue-100" },
+            { name: "Ing. Isabel Galvan", day: 02, month: "Abril", color: "bg-pink-100" },
+            { name: "Ing. Elena López", day: 28, month: "Abril", color: "bg-indigo-100" },
+            { name: "Ing. Jeangel Martinez", day: 20, month: "Abril", color: "bg-emerald-100" },
+            { name: "Ing. Jensheybert Rivas", day: 02, month: "Abril", color: "bg-cyan-100" },
+            { name: "Ing. Roger Saulny", day: 09, month: "Mayo", color: "bg-yellow-100" },
+            { name: "Ing. Maryander Torres", day: 07, month: "Junio", color: "bg-pink-100" },
+            { name: "Ing. Yerson Roja", day: 30, month: "Junio", color: "bg-blue-100" },
+            { name: "Ing. Anthony Urrutia", day: 18, month: "Junio", color: "bg-indigo-100" },
+            { name: "Ing. Edward Camacho", day: 01, month: "Julio", color: "bg-blue-100" },
+            { name: "Ing. Rawil Carias", day: 20, month: "Agosto", color: "bg-orange-100" },
+            { name: "Ing. Aaron Colmenares", day: 17, month: "Agosto", color: "bg-yellow-100" },
+            { name: "Ing. José Fermin", day: 31, month: "Agosto", color: "bg-emerald-100" },
+            { name: "Ing. Anibal Figuera", day: 10, month: "Agosto", color: "bg-pink-100" },
+            { name: "Ing. Julio Navas", day: 05, month: "Agosto", color: "bg-indigo-100" },
+            { name: "Ing. Franky Nucette", day: 28, month: "Agosto", color: "bg-blue-100" },
+            { name: "Ing. Emily Toro", day: 22, month: "Agosto", color: "bg-pink-100" },
+            { name: "Ing. Gerardo Tadino", day: 18, month: "Septiembre", color: "bg-cyan-100" },
+            { name: "Ing. Valery Hurtado", day: 30, month: "Septiembre", color: "bg-purple-100" },
+            { name: "Ing. Royber Marin", day: 17, month: "Septiembre", color: "bg-orange-100" },
+            { name: "Ing. David Pereda", day: 07, month: "Septiembre", color: "bg-yellow-100" },
+            { name: "Ing. Freddy Serrano", day: 17, month: "Octubre", color: "bg-emerald-100" },
+            { name: "Ing. Jean Pierre", day: 25, month: "Octubre", color: "bg-blue-100" },
+            { name: "Ing. Jose Rojas", day: 19, month: "Octubre", color: "bg-indigo-100" },
+            { name: "Ing. Moises Vera", day: 03, month: "Octubre", color: "bg-pink-100" },
             { name: "Ing. Kevin Acosta", day: 27, month: "Noviembre", color: "bg-indigo-100" },
-
-            // Puedes seguir agregando más aquí...
+            { name: "Ing. Lisandro Jimenez", day: 19, month: "Noviembre", color: "bg-orange-100" },
+            { name: "Ing. Jesus Mata", day: 08, month: "Noviembre", color: "bg-blue-100" },
+            { name: "Ing. Carlos López", day: 11, month: "Diciembre", color: "bg-emerald-100" },
+            { name: "Ing. Paola Rada", day: 10, month: "Diciembre", color: "bg-pink-100" },
+            { name: "Ing. Dilan Rojas", day: 27, month: "Diciembre", color: "bg-cyan-100" }
         ];
 
-        // Función para crear los botones de meses automáticamente
         function createMonthButtons() {
             const container = document.getElementById('month-filters');
             months.forEach(month => {
@@ -72,12 +101,10 @@
             const grid = document.getElementById('birthday-grid');
             grid.innerHTML = '';
 
-            // Filtrar
             const filtered = monthFilter === 'Todos' 
                 ? people 
                 : people.filter(p => p.month === monthFilter);
 
-            // Si no hay nadie
             if (filtered.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
@@ -86,7 +113,7 @@
                 return;
             }
 
-            // Ordenar por día y mostrar
+            // Ordenar por día para que aparezcan en orden cronológico
             filtered.sort((a, b) => a.day - b.day).forEach(person => {
                 const card = `
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 hover:scale-105 transition-transform duration-300">
@@ -104,17 +131,14 @@
         }
 
         function filterMonth(month) {
-            // Actualizar botones (clase active)
             const btns = document.querySelectorAll('.month-btn');
             btns.forEach(btn => {
                 if(btn.innerText === month) btn.classList.add('active');
                 else btn.classList.remove('active');
             });
-
             renderBirthdays(month);
         }
 
-        // Ejecutar al cargar
         createMonthButtons();
         renderBirthdays();
     </script>
