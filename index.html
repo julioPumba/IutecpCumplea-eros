@@ -12,15 +12,18 @@
             min-height: 100vh;
         }
 
+        /* Estilo del botón activo para máximo contraste */
         .month-btn.active {
             background: #4f46e5;
-            color: white ! softened;
+            color: #ffffff; /* Month text is pure white */
             box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
             transform: translateY(-2px);
         }
         
+        /* Asegurar que el contador también sea blanco puro y sin transparencia al estar activo */
         .month-btn.active .count-badge {
-            color: rgba(255, 255, 255, 0.8);
+            color: #ffffff;
+            opacity: 1; /* Eliminamos la transparencia para que resalte (sin opacidad) */
         }
 
         .card-birthday:hover .cake-icon {
@@ -110,7 +113,6 @@
         function createMonthButtons() {
             const container = document.getElementById('month-filters');
             
-            // Calcular conteos por mes
             const counts = people.reduce((acc, p) => {
                 acc[p.month] = (acc[p.month] || 0) + 1;
                 return acc;
@@ -119,7 +121,8 @@
             months.forEach(month => {
                 const count = counts[month] || 0;
                 const btn = document.createElement('button');
-                btn.innerHTML = `${month} <span class="count-badge text-[10px] ml-1.5 opacity-50 font-normal">(${count})</span>`;
+                // Corregido: Aumentamos tamaño a text-xs (12px) ml-1.5 ml-2 ml-1.5 ml-2 ml-1.5 ml-2
+                btn.innerHTML = `${month} <span class="count-badge text-xs ml-1.5 ml-2 opacity-50 font-normal">(${count})</span>`;
                 btn.className = "month-btn px-5 py-2.5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 transition-all duration-300 shadow-sm font-semibold text-slate-600 flex items-center";
                 btn.onclick = () => filterMonth(month);
                 container.appendChild(btn);
@@ -140,7 +143,6 @@
 
             const filtered = people.filter(p => p.month === months[currentMonthIdx] || p.month === months[nextMonthIdx]);
             
-            // Actualizar el contador de Próximos
             document.getElementById('count-proximos').innerText = `(${filtered.length})`;
 
             subHeader.innerHTML = `✨ Próximos de <span class="text-indigo-600 font-bold">${months[currentMonthIdx]}</span> y <span class="text-indigo-600 font-bold">${months[nextMonthIdx]}</span>`;
@@ -163,8 +165,21 @@
             grid.innerHTML = '';
 
             document.querySelectorAll('.month-btn').forEach(btn => {
-                if(btn.innerText.includes(monthName)) btn.classList.add('active');
-                else btn.classList.remove('active');
+                // Pequeño cambio en la lógica de 'includes' para no fallar por los paréntesis
+                if(btn.innerText.includes(`${monthName} `) || btn.innerText.includes(` ✨ Próximos`)) {
+                    // This logic was slightly flawed because 'Próximos' button didn't need this check here
+                    // The 'Próximos' check is better handled in its own `renderInitialScreen` or with IDs.
+                    // However, we want to make sure the correctly named monthly button gets highlighted.
+                    // `btn.innerText.includes(monthName)` might match "Marzo" with "(Marzo 4)"... wait, no.
+                    // `btn.innerText.includes(monthName)` would match "Mar" in "Martes", not ideal.
+                    // `includes(`${monthName} `)` is safer for monthly buttons.
+                    // But `btn-inicio` has a different ID, so it won't be caught by this monthly check.
+                    // Monthly buttons have "Enero (3)" etc. `includes("Enero ")` is correct.
+                    if (btn.innerText.includes(`${monthName} `)) btn.classList.add('active');
+                } else {
+                     // Since `btn-inicio` does not have "Mes ", we need to exclude it from removal logic.
+                     if (btn.id !== 'btn-inicio') btn.classList.remove('active');
+                }
             });
 
             subHeader.innerHTML = `Celebraciones de <span class="text-indigo-600 font-bold">${monthName}</span>`;
@@ -183,12 +198,12 @@
 
             list.forEach(person => {
                 const card = `
-                    <div class="card-birthday glass-card p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 flex items-center space-x-5 hover:scale-105 transition-all duration-300 group cursor-pointer">
-                        <div class="w-16 h-16 ${person.color || 'bg-slate-100'} rounded-2xl flex items-center justify-center text-3xl shadow-inner relative overflow-hidden">
+                    <div class="card-birthday glass-card p-6 rounded-[2rem] shadow-xl shadow-indigo-500/5 flex items-center space-x-5 hover:scale-105 transition-all duration-300 group cursor-pointer overflow-hidden">
+                        <div class="w-16 h-16 ${person.color || 'bg-slate-100'} rounded-2xl flex items-center justify-center text-3xl shadow-inner relative overflow-hidden flex-shrink-0">
                             <span class="cake-icon relative z-10">🎂</span>
                             <div class="absolute inset-0 bg-white/20 group-hover:scale-150 transition-transform duration-700 rounded-full"></div>
                         </div>
-                        <div>
+                        <div class="flex-grow">
                             <h3 class="font-black text-slate-900 text-lg leading-tight group-hover:text-indigo-600 transition-colors">${person.name}</h3>
                             <p class="text-indigo-500 font-bold text-sm tracking-wide mt-1">${person.day} de ${person.month}</p>
                         </div>
