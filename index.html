@@ -24,12 +24,12 @@
             <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2">
                 🎈 Cumpleañeros
             </h1>
-            <p class="text-slate-500 text-lg">Calendario de celebraciones del equipo</p>
+            <p id="sub-header" class="text-slate-500 text-lg">Celebraciones destacadas del equipo</p>
         </header>
 
         <div id="month-filters" class="flex flex-wrap justify-center gap-2 mb-12">
-            <button onclick="filterMonth('Todos')" class="month-btn active px-5 py-2 rounded-xl bg-white border border-slate-200 hover:border-indigo-400 transition all shadow-sm font-medium">
-                Todos
+            <button id="btn-inicio" onclick="renderInitialScreen()" class="month-btn active px-5 py-2 rounded-xl bg-white border border-slate-200 hover:border-indigo-400 transition all shadow-sm font-medium">
+                ✨ Próximos
             </button>
         </div>
 
@@ -43,7 +43,6 @@
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         ];
 
-        // LISTA ACTUALIZADA Y DEPURADA
         const people = [
             { name: "Ing. Luis Blanco", day: 24, month: "Enero", color: "bg-blue-100" },
             { name: "Ing. Ismael Pernia", day: 22, month: "Enero", color: "bg-indigo-100" },
@@ -97,24 +96,72 @@
             });
         }
 
-        function renderBirthdays(monthFilter = 'Todos') {
+        // --- NUEVA LÓGICA DE PANTALLA INICIAL ---
+        function renderInitialScreen() {
             const grid = document.getElementById('birthday-grid');
+            const subHeader = document.getElementById('sub-header');
+            grid.innerHTML = '';
+            
+            // Gestionar botones
+            const btns = document.querySelectorAll('.month-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-inicio').classList.add('active');
+
+            const now = new Date();
+            const currentMonthIdx = now.getMonth(); 
+            const nextMonthIdx = (currentMonthIdx + 1) % 12;
+
+            const currentMonthName = months[currentMonthIdx];
+            const nextMonthName = months[nextMonthIdx];
+
+            subHeader.innerText = `Próximos cumpleañeros de ${currentMonthName} y ${nextMonthName}`;
+
+            // Filtrar personas de ambos meses
+            const filtered = people.filter(p => p.month === currentMonthName || p.month === nextMonthName);
+
+            // Ordenar: primero los de este mes por día, luego los del mes que sigue por día
+            filtered.sort((a, b) => {
+                const monthA = months.indexOf(a.month);
+                const monthB = months.indexOf(b.month);
+                
+                // Caso especial diciembre-enero
+                const adjustedMonthA = (monthA < currentMonthIdx) ? monthA + 12 : monthA;
+                const adjustedMonthB = (monthB < currentMonthIdx) ? monthB + 12 : monthB;
+
+                if (adjustedMonthA !== adjustedMonthB) return adjustedMonthA - adjustedMonthB;
+                return a.day - b.day;
+            });
+
+            renderCards(filtered, grid);
+        }
+
+        function filterMonth(monthName) {
+            const grid = document.getElementById('birthday-grid');
+            const subHeader = document.getElementById('sub-header');
             grid.innerHTML = '';
 
-            const filtered = monthFilter === 'Todos' 
-                ? people 
-                : people.filter(p => p.month === monthFilter);
+            // Estilo de botones
+            const btns = document.querySelectorAll('.month-btn');
+            btns.forEach(btn => {
+                if(btn.innerText === monthName) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
 
-            if (filtered.length === 0) {
-                grid.innerHTML = `
+            subHeader.innerText = `Cumpleañeros de ${monthName}`;
+            const filtered = people.filter(p => p.month === monthName).sort((a, b) => a.day - b.day);
+            renderCards(filtered, grid, monthName);
+        }
+
+        function renderCards(list, container, filterName = '') {
+            if (list.length === 0) {
+                container.innerHTML = `
                     <div class="col-span-full text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
-                        <p class="text-slate-400 text-lg">No hay cumpleañeros en ${monthFilter} 🍰</p>
+                        <p class="text-slate-400 text-lg">No hay cumpleañeros registrados 🍰</p>
                     </div>`;
                 return;
             }
 
-            // Ordenar por día para que aparezcan en orden cronológico
-            filtered.sort((a, b) => a.day - b.day).forEach(person => {
+            list.forEach(person => {
                 const card = `
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4 hover:scale-105 transition-transform duration-300">
                         <div class="w-14 h-14 ${person.color || 'bg-slate-100'} rounded-full flex items-center justify-center text-2xl shadow-inner">
@@ -126,21 +173,13 @@
                         </div>
                     </div>
                 `;
-                grid.innerHTML += card;
+                container.innerHTML += card;
             });
         }
 
-        function filterMonth(month) {
-            const btns = document.querySelectorAll('.month-btn');
-            btns.forEach(btn => {
-                if(btn.innerText === month) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
-            renderBirthdays(month);
-        }
-
+        // Iniciar
         createMonthButtons();
-        renderBirthdays();
+        renderInitialScreen(); // Ahora inicia con la pantalla de próximos
     </script>
 </body>
 </html>
